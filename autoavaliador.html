@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/128/2824/2824128.png">
+    <title>Avaliação de Conhecimentos Técnicos</title>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --primary-hover: #3a56d4;
+            --secondary-color: #3f37c9;
+            --accent-color: #f72585;
+            --success-color: #4cc9f0;
+            --light-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #2b2d42;
+            --text-light: #8d99ae;
+            --border-color: #e9ecef;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+            --radius-sm: 8px;
+            --transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.75rem;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+            max-width: 700px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .actions-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .actions-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 1rem;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            opacity: 0.9;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-icon {
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 2.5rem;
+            height: 2.5rem;
+        }
+
+        .categories-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 350px), 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .category-card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .category-header {
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(67, 97, 238, 0.05);
+            gap: 0.5rem;
+        }
+
+        .category-title {
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--primary-color);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .category-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .questions-list {
+            padding: 1rem;
+            flex-grow: 1;
+        }
+
+        .question-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .question-item:last-child {
+            border-bottom: none;
+        }
+
+        .question-text {
+            flex-grow: 1;
+            font-weight: 500;
+            word-break: break-word;
+        }
+
+        .question-select {
+            padding: 0.5rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            background-color: var(--light-bg);
+            font-family: inherit;
+            min-width: 120px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .question-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition);
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .remove-btn:hover {
+            background-color: rgba(247, 37, 133, 0.1);
+            color: var(--accent-color);
+        }
+
+        .add-question-form {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .add-question-input {
+            flex-grow: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            min-width: 0;
+        }
+
+        .add-question-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .result-container, .analysis-container {
+            margin-top: 1.5rem;
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .result-header, .analysis-header {
+            padding: 1.25rem;
+            background-color: rgba(67, 97, 238, 0.05);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .result-title, .analysis-title {
+            font-weight: 700;
+            font-size: 1.15rem;
+            margin: 0;
+        }
+
+        .result-content, .analysis-content {
+            padding: 1.25rem;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-family: 'Fira Code', monospace;
+            resize: vertical;
+            background-color: #f8f9fa;
+            line-height: 1.5;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .skill-level {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .skill-none {
+            background-color: #e9ecef;
+            color: #6c757d;
+        }
+
+        .skill-low {
+            background-color: #fff3bf;
+            color: #f08c00;
+        }
+
+        .skill-medium {
+            background-color: #b2f2bb;
+            color: #2b8a3e;
+        }
+
+        .skill-high {
+            background-color: #d0ebff;
+            color: #1971c2;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+        }
+
+        .empty-state-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--border-color);
+        }
+
+        .drag-handle {
+            cursor: move;
+            color: var(--text-light);
+            opacity: 0.5;
+            transition: var(--transition);
+        }
+
+        .drag-handle:hover {
+            opacity: 1;
+            color: var(--primary-color);
+        }
+
+        .sortable-chosen {
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+
+        .sortable-ghost {
+            opacity: 0.5;
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+
+        /* Analysis specific styles */
+        .analysis-result {
+            background-color: #f8f9fa;
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .analysis-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            color: var(--text-light);
+        }
+
+        .spinner {
+            width: 1.5rem;
+            height: 1.5rem;
+            border: 3px solid rgba(67, 97, 238, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .analysis-suggestions {
+            margin-top: 1.5rem;
+        }
+
+        .suggestion-card {
+            background-color: white;
+            border-radius: var(--radius-sm);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--success-color);
+        }
+
+        .suggestion-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .suggestion-level {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background-color: var(--light-bg);
+            border-radius: 4px;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            left: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-hover);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 1000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: var(--transition);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-success {
+            background-color: #2b8a3e;
+        }
+
+        .toast-error {
+            background-color: #c92a2a;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .actions-bar, .actions-group {
+                gap: 0.5rem;
+            }
+
+            .btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .category-header, .result-header, .analysis-header {
+                padding: 1rem;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .questions-list, .result-content, .analysis-content {
+                padding: 0.75rem;
+            }
+
+            .question-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .question-select {
+                width: 100%;
+            }
+
+            .empty-state {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .add-question-form {
+                flex-direction: column;
+            }
+
+            .btn-icon {
+                width: 100%;
+                border-radius: var(--radius-sm);
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Avaliação de Conhecimentos Técnicos</h1>
+            <p class="subtitle">Avalie e documente suas habilidades técnicas de forma organizada e visual</p>
+        </header>
+
+        <div class="actions-bar">
+            <div class="actions-group">
+                <button class="btn btn-primary" onclick="addNewCategory()">
+                    <i class="fas fa-plus"></i> Nova Categoria
+                </button>
+                <button class="btn btn-outline" onclick="resetToInitialData()">
+                    <i class="fas fa-sync-alt"></i> Redefinir
+                </button>
+            </div>
+            <button class="btn btn-primary" onclick="generateSummary()">
+                <i class="fas fa-file-export"></i> Gerar Relatório
+            </button>
+        </div>
+
+        <div id="categories-container" class="categories-container">
+            <!-- Categorias serão adicionadas dinamicamente aqui -->
+        </div>
+
+        <div class="analysis-container">
+            <div class="analysis-header">
+                <h3 class="analysis-title">Análise de Perfil ("simulation" this feature)</h3>
+                <button class="btn btn-primary" onclick="analyzeProfile()">
+                    <i class="fas fa-robot"></i> Analisar Perfil
+                </button>
+            </div>
+            <div class="analysis-content">
+                <div id="analysis-result" class="analysis-result" style="display: none;">
+                    <div id="analysis-text"></div>
+                    <div id="analysis-suggestions" class="analysis-suggestions"></div>
+                </div>
+                <div id="analysis-loading" class="analysis-loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <span>Analisando seu perfil...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="result-container">
+            <div class="result-header">
+                <h3 class="result-title">Relatório de Habilidades</h3>
+                <button class="btn btn-sm" onclick="copyToClipboard()">
+                    <i class="fas fa-copy"></i> Copiar
+                </button>
+            </div>
+            <div class="result-content">
+                <textarea id="result" readonly placeholder="Seu relatório aparecerá aqui..."></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toast-message">Operação realizada com sucesso!</span>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+    <script>
+        // Dados iniciais das categorias e perguntas
+        const initialData = [
+            {
+                name: "Infraestrutura e Sistemas",
+                questions: [
+                    "Suporte Técnico Nível 3",
+                    "Documentação Técnica",
+                    "Microsoft 365 / Exchange Online",
+                    "Active Directory",
+                    "Azure",
+                    "AWS",
+                    "Oracle Cloud",
+                    "Linux (Red Hat, RHEL)",
+                    "Windows Server",
+                    "VMware",
+                    "Hyper-V",
+                    "Proxmox"
+                ]
+            },
+            {
+                name: "Ferramentas e Segurança",
+                questions: [
+                    "pfSense",
+                    "Sophos",
+                    "Zabbix",
+                    "Eset Antivirus",
+                    "GLPI",
+                    "Admin Center",
+                    "SharePoint",
+                    "Power BI",
+                    "Acronis"
+                ]
+            },
+            {
+                name: "Programação / Linguagens",
+                questions: [
+                    "Python",
+                    "JavaScript",
+                    "Java",
+                    "PHP",
+                    "C#"
+                ]
+            },
+            {
+                name: "Redes / Protocolos",
+                questions: [
+                    "TCP/IP",
+                    "DNS",
+                    "DHCP",
+                    "Firewall",
+                    "Modelo OSI"
+                ]
+            }
+        ];
+
+        // Carrega as categorias iniciais
+        document.addEventListener('DOMContentLoaded', function() {
+            renderAllCategories();
+            initializeSortable();
+        });
+
+        // Inicializa a funcionalidade de arrastar e soltar
+        function initializeSortable() {
+            const container = document.getElementById('categories-container');
+
+            new Sortable(container, {
+                animation: 150,
+                handle: '.drag-handle',
+                ghostClass: 'sortable-ghost',
+                chosenClass: 'sortable-chosen',
+                onEnd: function() {
+                    // Atualiza a ordem no localStorage
+                    const newOrder = Array.from(container.children).map((el) => {
+                        return parseInt(el.dataset.index);
+                    });
+
+                    const data = getCurrentData();
+                    const newData = newOrder.map(index => data[index]);
+                    saveCurrentData(newData);
+                }
+            });
+        }
+
+        // Função para renderizar todas as categorias
+        function renderAllCategories() {
+            const container = document.getElementById('categories-container');
+            container.innerHTML = '';
+
+            const data = getCurrentData();
+
+            if (data.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-folder-open"></i>
+                        </div>
+                        <h3>Nenhuma categoria encontrada</h3>
+                        <p>Adicione sua primeira categoria para começar a avaliação</p>
+                        <button class="btn btn-primary" onclick="addNewCategory()">
+                            <i class="fas fa-plus"></i> Criar Categoria
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            data.forEach((category, index) => {
+                const categoryElement = createCategoryElement(category, index);
+                container.appendChild(categoryElement);
+            });
+        }
+
+        // Função para criar o elemento de uma categoria
+        function createCategoryElement(category, index) {
+            const categoryElement = document.createElement('div');
+            categoryElement.className = 'category-card fade-in';
+            categoryElement.dataset.index = index;
+
+            // Cabeçalho da categoria
+            const header = document.createElement('div');
+            header.className = 'category-header';
+            header.innerHTML = `
+                <h3 class="category-title">
+                    <i class="fas fa-grip-vertical drag-handle" title="Arrastar para reordenar"></i>
+                    ${category.name}
+                </h3>
+                <div class="category-actions">
+                    <button class="btn btn-sm" onclick="addQuestionToCategory(${index})">
+                        <i class="fas fa-plus"></i> Pergunta
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="removeCategory(${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+
+            categoryElement.appendChild(header);
+
+            // Lista de perguntas
+            const questionsList = document.createElement('div');
+            questionsList.className = 'questions-list';
+
+            if (category.questions.length === 0) {
+                questionsList.innerHTML = `
+                    <div class="empty-state" style="padding: 1rem;">
+                        <i class="fas fa-question-circle" style="font-size: 1.5rem;"></i>
+                        <p>Nenhuma pergunta nesta categoria</p>
+                    </div>
+                `;
+            } else {
+                category.questions.forEach((question, qIndex) => {
+                    const questionElement = createQuestionElement(question, index, qIndex);
+                    questionsList.appendChild(questionElement);
+                });
+            }
+
+            categoryElement.appendChild(questionsList);
+
+            // Formulário para adicionar nova pergunta
+            const addQuestionForm = document.createElement('div');
+            addQuestionForm.className = 'add-question-form';
+            addQuestionForm.innerHTML = `
+                <input type="text" class="add-question-input" placeholder="Adicionar nova pergunta..." 
+                       onkeypress="if(event.key === 'Enter') addQuestionToCategory(${index}, this)">
+                <button class="btn btn-primary btn-icon" onclick="addQuestionToCategory(${index}, this.previousElementSibling)">
+                    <i class="fas fa-plus"></i>
+                </button>
+            `;
+            categoryElement.appendChild(addQuestionForm);
+
+            return categoryElement;
+        }
+
+        // Função para criar o elemento de uma pergunta
+        function createQuestionElement(question, categoryIndex, questionIndex) {
+            const questionItem = document.createElement('div');
+            questionItem.className = 'question-item';
+            questionItem.dataset.question = question;
+
+            questionItem.innerHTML = `
+                <div class="question-text">${question}</div>
+                <select class="question-select" onchange="updateSkillLevel(this, '${question}')">
+                    <option value="Nenhum">Nenhum</option>
+                    <option value="Baixo">Baixo</option>
+                    <option value="Médio">Médio</option>
+                    <option value="Alto">Alto</option>
+                </select>
+                <button class="remove-btn" onclick="removeQuestion(${categoryIndex}, ${questionIndex})" title="Remover pergunta">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+
+            // Restaura a seleção salva se existir
+            const savedLevel = localStorage.getItem(`skill_${question}`);
+            if (savedLevel) {
+                questionItem.querySelector('.question-select').value = savedLevel;
+            }
+
+            return questionItem;
+        }
+
+        // Atualiza o nível de habilidade no localStorage
+        function updateSkillLevel(selectElement, question) {
+            localStorage.setItem(`skill_${question}`, selectElement.value);
+        }
+
+        // Função para adicionar uma nova categoria
+        function addNewCategory() {
+            const categoryName = prompt("Digite o nome da nova categoria:");
+            if (categoryName && categoryName.trim()) {
+                const data = getCurrentData();
+                data.push({
+                    name: categoryName.trim(),
+                    questions: []
+                });
+                saveCurrentData(data);
+                renderAllCategories();
+                showToast(`Categoria "${categoryName}" adicionada`, 'success');
+            }
+        }
+
+        // Função para remover uma categoria
+        function removeCategory(index) {
+            const data = getCurrentData();
+            const categoryName = data[index].name;
+
+            if (confirm(`Tem certeza que deseja remover a categoria "${categoryName}" e todas as suas perguntas?`)) {
+                // Remove os níveis de habilidade das perguntas desta categoria
+                data[index].questions.forEach(question => {
+                    localStorage.removeItem(`skill_${question}`);
+                });
+                
+                data.splice(index, 1);
+                saveCurrentData(data);
+                renderAllCategories();
+                showToast(`Categoria "${categoryName}" removida`, 'success');
+            }
+        }
+
+        // Função para adicionar uma pergunta a uma categoria
+        function addQuestionToCategory(categoryIndex, inputElement) {
+            let questionText = '';
+
+            if (inputElement && inputElement.value) {
+                questionText = inputElement.value.trim();
+                inputElement.value = '';
+            } else {
+                questionText = prompt("Digite o texto da nova pergunta:");
+            }
+
+            if (questionText && questionText.trim()) {
+                const data = getCurrentData();
+                questionText = questionText.trim();
+
+                // Verifica se a pergunta já existe em qualquer categoria
+                const questionExists = data.some(category => 
+                    category.questions.some(q => q.toLowerCase() === questionText.toLowerCase())
+                );
+
+                if (!questionExists) {
+                    data[categoryIndex].questions.push(questionText);
+                    saveCurrentData(data);
+                    renderAllCategories();
+                    showToast(`Pergunta adicionada à categoria "${data[categoryIndex].name}"`, 'success');
+                } else {
+                    showToast("Esta pergunta já existe em outra categoria!", 'error');
+                }
+            }
+        }
+
+        // Função para remover uma pergunta de uma categoria
+        function removeQuestion(categoryIndex, questionIndex) {
+            const data = getCurrentData();
+            const questionText = data[categoryIndex].questions[questionIndex];
+
+            if (confirm(`Remover a pergunta "${questionText}"?`)) {
+                // Remove o nível de habilidade da pergunta
+                localStorage.removeItem(`skill_${questionText}`);
+                
+                data[categoryIndex].questions.splice(questionIndex, 1);
+                saveCurrentData(data);
+                renderAllCategories();
+                showToast(`Pergunta "${questionText}" removida`, 'success');
+            }
+        }
+
+        // Função para obter os dados atuais
+        function getCurrentData() {
+            // Tenta obter do localStorage, senão usa os dados iniciais
+            const savedData = localStorage.getItem('techAssessmentData');
+            return savedData ? JSON.parse(savedData) : JSON.parse(JSON.stringify(initialData));
+        }
+
+        // Função para salvar os dados atuais
+        function saveCurrentData(data) {
+            localStorage.setItem('techAssessmentData', JSON.stringify(data));
+        }
+
+        // Função para gerar o resumo
+        function generateSummary() {
+            const data = getCurrentData();
+            let result = 'Avaliação de Conhecimentos Técnicos\n\n';
+            result += 'Data: ' + new Date().toLocaleDateString() + '\n\n';
+            result += '### Habilidades Avaliadas ###\n\n';
+
+            data.forEach(category => {
+                result += `## ${category.name} ##\n`;
+                let hasQuestions = false;
+
+                category.questions.forEach(question => {
+                    const savedLevel = localStorage.getItem(`skill_${question}`);
+                    if (savedLevel && savedLevel !== 'Nenhum') {
+                        result += `- ${question}: ${savedLevel}\n`;
+                        hasQuestions = true;
+                    }
+                });
+
+                if (!hasQuestions) {
+                    result += `- Nenhuma habilidade avaliada nesta categoria\n`;
+                }
+
+                result += '\n';
+            });
+
+            document.getElementById('result').value = result;
+            showToast("Relatório gerado com sucesso!", 'success');
+        }
+
+        // Função para copiar o resultado para a área de transferência
+        function copyToClipboard() {
+            const resultTextarea = document.getElementById('result');
+            
+            if (!resultTextarea.value.trim()) {
+                showToast("Nenhum relatório para copiar", 'error');
+                return;
+            }
+
+            resultTextarea.select();
+            resultTextarea.setSelectionRange(0, 99999); // Para dispositivos móveis
+
+            navigator.clipboard.writeText(resultTextarea.value)
+                .then(() => {
+                    showToast("Relatório copiado para a área de transferência!", 'success');
+                })
+                .catch(err => {
+                    console.error('Erro ao copiar texto: ', err);
+                    // Fallback para navegadores mais antigos
+                    try {
+                        document.execCommand('copy');
+                        showToast("Relatório copiado!", 'success');
+                    } catch (e) {
+                        showToast("Não foi possível copiar automaticamente", 'error');
+                    }
+                });
+        }
+
+        // Função para resetar para os dados iniciais
+        function resetToInitialData() {
+            if (confirm("Isso removerá todas as suas categorias e perguntas personalizadas. Deseja continuar?")) {
+                localStorage.removeItem('techAssessmentData');
+
+                // Remove todos os níveis de habilidade salvos
+                const data = initialData;
+                data.forEach(category => {
+                    category.questions.forEach(question => {
+                        localStorage.removeItem(`skill_${question}`);
+                    });
+                });
+
+                renderAllCategories();
+                document.getElementById('result').value = '';
+                showToast("Dados redefinidos para os valores iniciais", 'success');
+            }
+        }
+
+        // Mostra uma notificação toast
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            const icon = toast.querySelector('i');
+
+            toastMessage.textContent = message;
+            toast.className = 'toast';
+
+            // Atualiza ícone com base no tipo
+            if (type === 'success') {
+                toast.classList.add('toast-success');
+                icon.className = 'fas fa-check-circle';
+            } else if (type === 'error') {
+                toast.classList.add('toast-error');
+                icon.className = 'fas fa-exclamation-circle';
+            }
+
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Função para analisar o perfil
+        async function analyzeProfile() {
+            const resultTextarea = document.getElementById('result');
+            const profileText = resultTextarea.value;
+
+            if (!profileText || profileText.trim() === '') {
+                showToast("Gere o relatório primeiro antes de analisar", 'error');
+                return;
+            }
+
+            // Mostrar loading
+            document.getElementById('analysis-loading').style.display = 'flex';
+            document.getElementById('analysis-result').style.display = 'none';
+
+            try {
+                // Simular uma chamada à API de IA (na prática, você usaria uma API real)
+                const analysis = await simulateAIAnalysis(profileText);
+
+                // Exibir resultados
+                document.getElementById('analysis-text').innerHTML = `
+                    <p>${analysis.summary}</p>
+                `;
+
+                const suggestionsHtml = analysis.suggestions.map(suggestion => `
+                    <div class="suggestion-card">
+                        <div class="suggestion-title">${suggestion.role}</div>
+                        <p>${suggestion.description}</p>
+                        <div class="suggestion-level">Nível sugerido: ${suggestion.level}</div>
+                    </div>
+                `).join('');
+
+                document.getElementById('analysis-suggestions').innerHTML = suggestionsHtml;
+
+                document.getElementById('analysis-loading').style.display = 'none';
+                document.getElementById('analysis-result').style.display = 'block';
+
+            } catch (error) {
+                console.error('Erro na análise:', error);
+                showToast("Erro ao analisar o perfil", 'error');
+                document.getElementById('analysis-loading').style.display = 'none';
+            }
+        }
+
+        // Função para simular análise de IA (substituir por chamada real à API)
+        function simulateAIAnalysis(profileText) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    // Análise simples baseada no conteúdo
+                    const hasCloudSkills = profileText.includes('Azure') || profileText.includes('AWS') || profileText.includes('Oracle Cloud');
+                    const hasProgramming = profileText.includes('Python') || profileText.includes('JavaScript') || profileText.includes('Java');
+                    const hasInfra = profileText.includes('Linux') || profileText.includes('Windows Server') || profileText.includes('VMware');
+                    const hasNetworking = profileText.includes('TCP/IP') || profileText.includes('DNS') || profileText.includes('Firewall');
+
+                    // Determinar nível geral
+                    const highSkillsCount = (profileText.match(/Alto/g) || []).length;
+                    const mediumSkillsCount = (profileText.match(/Médio/g) || []).length;
+
+                    let generalLevel = 'Júnior';
+                    if (highSkillsCount > 5) generalLevel = 'Sênior';
+                    else if (highSkillsCount + mediumSkillsCount > 3) generalLevel = 'Pleno';
+
+                    // Sugestões baseadas em skills
+                    const suggestions = [];
+
+                    if (hasCloudSkills && hasProgramming) {
+                        suggestions.push({
+                            role: 'DevOps Engineer',
+                            description: 'Seu perfil combina habilidades de desenvolvimento e infraestrutura em nuvem, ideal para atuar em DevOps.',
+                            level: generalLevel
+                        });
+                    }
+
+                    if (hasInfra && hasNetworking) {
+                        suggestions.push({
+                            role: 'Administrador de Sistemas',
+                            description: 'Você possui fortes habilidades em infraestrutura e redes, adequado para administração de sistemas.',
+                            level: generalLevel
+                        });
+                    }
+
+                    if (hasProgramming) {
+                        suggestions.push({
+                            role: 'Desenvolvedor Back-end',
+                            description: 'Suas habilidades de programação indicam aptidão para desenvolvimento back-end.',
+                            level: generalLevel
+                        });
+                    }
+
+                    if (hasCloudSkills) {
+                        suggestions.push({
+                            role: 'Especialista em Cloud',
+                            description: 'Seu conhecimento em plataformas de nuvem sugere potencial para atuar como especialista em cloud computing.',
+                            level: generalLevel
+                        });
+                    }
+
+                    if (suggestions.length === 0) {
+                        suggestions.push({
+                            role: 'Analista de TI',
+                            description: 'Seu perfil mostra conhecimentos técnicos gerais adequados para funções de análise e suporte em TI.',
+                            level: generalLevel
+                        });
+                    }
+
+                    resolve({
+                        summary: `Com base em suas habilidades técnicas avaliadas, seu perfil se enquadra principalmente no nível <strong>${generalLevel}</strong>. 
+                              As seguintes posições podem ser adequadas para você:`,
+                        suggestions: suggestions
+                    });
+                }, 1500); // Simular tempo de processamento
+            });
+        }
+    </script>
+</body>
+</html>
